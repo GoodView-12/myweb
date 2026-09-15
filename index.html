@@ -23,6 +23,19 @@
         hr{
             border-color:#f2c8d9;
         }
+        .pic-box{
+            margin:30px 0;
+            text-align:center;
+        }
+        .pic-box img{
+            max-width:100%;
+            border-radius:16px;
+            box-shadow: 0 2px 12px #f0c2d4;
+        }
+        #time-text{
+            color:#b04b78;
+            font-size:17px;
+        }
     </style>
 </head>
 <body>
@@ -30,6 +43,24 @@
     <p class="desc">
         这里还是空的。
     </p>
+
+    <!-- 图片区域 -->
+    <div class="pic-box">
+        <!-- 把src引号里的链接替换成你自己图片地址 -->
+        <img src="https://picsum.photos/id/24/600/320" alt="配图">
+    </div>
+
+    <p id="time-text"></p>
     <hr>
+
+<script>
+// 实时显示当前日期时间
+function showTime(){
+    let now=new Date();
+    document.getElementById("time-text").innerText="📅 当前时间："+now.toLocaleDateString()+" "+now.toLocaleTimeString();
+}
+showTime();
+setInterval(showTime,1000);
+</script>
 </body>
 </html>
