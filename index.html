@@ -15,6 +15,9 @@
             color: #992e5c;
             font-size: 48px;
         }
+        h2 {
+            color:#992e5c;
+        }
         .desc {
             font-size:18px;
             color:#c86890;
@@ -26,41 +29,164 @@
         .pic-box{
             margin:30px 0;
             text-align:center;
+            position: relative;
+            overflow: hidden;
         }
         .pic-box img{
             max-width:100%;
             border-radius:16px;
             box-shadow: 0 2px 12px #f0c2d4;
+            display:block;
+        }
+        .pic-box::after{
+            content:"";
+            position:absolute;
+            left:0;
+            bottom:0;
+            width:100%;
+            height:60%;
+            border-radius:16px;
+            background: linear-gradient(to top, #fff0f6, transparent);
+            pointer-events:none;
         }
         #time-text{
             color:#b04b78;
             font-size:17px;
         }
+        .page{
+            display:none;
+        }
+        .page.active{
+            display:block;
+        }
+        .back-btn{
+            background:#992e5c;
+            color:#fff;
+            border:none;
+            padding:10px 18px;
+            border-radius:8px;
+            font-size:16px;
+            cursor:pointer;
+            margin-bottom:20px;
+        }
+        .func-btn{
+            background:#c86890;
+            color:#fff;
+            border:none;
+            padding:12px 16px;
+            border-radius:10px;
+            margin:6px;
+            font-size:15px;
+            cursor:pointer;
+        }
+        .content-block{
+            margin-top:30px;
+            color:#702446;
+            font-size:18px;
+            line-height:1.8;
+        }
+        .wallpaper-img{
+            max-width:100%;
+            border-radius:14px;
+            margin:12px 0;
+        }
+        .source-info{
+            font-size:14px;
+            color:#888;
+            margin-top:8px;
+        }
     </style>
 </head>
 <body>
-    <h1>吉辰良景の个人小网站</h1>
-    <p class="desc">
-        这里还是空的。
-    </p>
-
-    <!-- 图片区域 -->
-    <div class="pic-box">
-        <!-- 把src引号里的链接替换成你自己图片地址 -->
-        <img src="https://picsum.photos/id/24/600/320" alt="配图">
+    <div id="page-home" class="page active">
+        <h1>吉辰良景の个人小网站</h1>
+        <p class="desc">
+            你好。
+        </p>
+        <div class="pic-box">
+            <img src="https://picsum.photos/id/24/600/320" alt="配图">
+        </div>
+        <p id="time-text"></p>
+        <hr>
+        <div>
+            <button class="func-btn" onclick="switchPage('page-tool')">✨趣味小工具</button>
+        </div>
     </div>
 
-    <p id="time-text"></p>
-    <hr>
+    <div id="page-tool" class="page">
+        <button class="back-btn" onclick="switchPage('page-home')">← 返回主页</button>
+        <h2>趣味小工具</h2>
+        <div>
+            <button class="func-btn" onclick="loadWallpaper()">🖼随机壁纸</button>
+            <button class="func-btn" onclick="loadHitokoto()">📜一言短句</button>
+            <button class="func-btn" onclick="loadPoem()">🖋今日诗词</button>
+        </div>
+        <div class="content-block" id="panelContent">
+            <p>点击上方按钮获取内容</p>
+        </div>
+        <div style="margin-top:40px;font-size:13px;color:#999;">
+            数据来源：Picsum Photos、Hitokoto 一言、今日诗词API
+        </div>
+    </div>
 
 <script>
-// 实时显示当前日期时间
 function showTime(){
     let now=new Date();
     document.getElementById("time-text").innerText="📅 当前时间："+now.toLocaleDateString()+" "+now.toLocaleTimeString();
 }
 showTime();
 setInterval(showTime,1000);
+
+function switchPage(pageId){
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    document.getElementById(pageId).classList.add('active');
+    window.scrollTo(0,0);
+}
+
+function loadWallpaper(){
+    document.getElementById('panelContent').innerHTML = "<p>加载中……</p>";
+    try{
+        const seed = Math.floor(Math.random() * 1000000);
+        const imgUrl = `https://picsum.photos/seed/${seed}/1600/900`;
+        document.getElementById('panelContent').innerHTML = `
+            <img class="wallpaper-img" src="${imgUrl}" alt="随机壁纸">
+            <p>随机风景壁纸</p>
+            <div class="source-info">图片来源：Picsum Photos</div>
+        `;
+    }catch(err){
+        document.getElementById('panelContent').innerHTML = "<p>获取壁纸失败，请重试</p>";
+    }
+}
+
+async function loadHitokoto(){
+    document.getElementById('panelContent').innerHTML = "<p>加载中……</p>";
+    try{
+        const res=await fetch("https://v1.hitokoto.cn/");
+        const data=await res.json();
+        document.getElementById('panelContent').innerHTML = `
+        <div style="font-size:22px;color:#992e5c">「${data.hitokoto}」</div>
+        <p>——${data.from}</p>
+        <div class="source-info">数据来源：Hitokoto 一言</div>
+        `;
+    }catch(err){
+        document.getElementById('panelContent').innerHTML = "<p>获取句子失败</p>";
+    }
+}
+
+async function loadPoem(){
+    document.getElementById('panelContent').innerHTML = "<p>加载中……</p>";
+    try{
+        const res=await fetch("https://v1.jinrishici.com/all.json");
+        const json=await res.json();
+        document.getElementById('panelContent').innerHTML = `
+        <div style="font-size:22px;color:#992e5c">${json.content}</div>
+        <p>《${json.origin}》 · ${json.author}</p>
+        <div class="source-info">数据来源：今日诗词API</div>
+        `;
+    }catch(err){
+        document.getElementById('panelContent').innerHTML = "<p>获取诗词失败</p>";
+    }
+}
 </script>
 </body>
 </html>
