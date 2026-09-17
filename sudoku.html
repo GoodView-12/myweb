@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>随机数独（错误标红）</title>
+<style>
+*{box-sizing:border-box;font-family:system-ui}
+body{background:#f4f7ff;text-align:center;padding:20px}
+table{border-collapse:collapse;margin:20px auto;background:white}
+td{
+    width:44px;height:44px;text-align:center;
+    border:1px solid #bbb;
+    position:relative;
+}
+td:nth-child(3n){border-right:2px solid #333}
+tr:nth-child(3n){border-bottom:2px solid #333}
+input{
+    width:100%;height:100%;border:none;text-align:center;font-size:20px;outline:none;background:transparent;color:#222
+}
+.original{background:#e9edff;color:#222;font-weight:bold}
+.wrong{
+    background:#ff2d2d !important;
+    color:#fff !important;
+    font-weight:bold;
+    box-shadow:inset 0 0 0 2px #a10000;
+}
+.wrong input{color:#fff}
+button{
+    padding:9px 18px;border:none;border-radius:6px;
+    background:#4066cc;color:white;cursor:pointer;font-size:16px
+}
+#backBtn{
+    background:#777;
+    margin-bottom:16px;
+}
+/* 按钮容器：弹性布局，两端拉开，小屏可横向滚动 */
+.btn-group{
+    display:flex;
+    gap:30px;
+    justify-content:center;
+    overflow-x:auto;
+    padding:10px 20px;
+}
+#tip{margin-top:18px;font-size:18px;font-weight:600}
+</style>
+</head>
+<body>
+<button id="backBtn" onclick="location.href='https://goodview-12.github.io/myweb/'">← 返回主页</button>
+<h2>随机数独小游戏</h2>
+<table id="board"></table>
+<div class="btn-group">
+<button onclick="check()">检查答案（标红错误格）</button>
+<button onclick="newGame()">新一局（随机）</button>
+</div>
+<div id="tip"></div>
+
+<script>
+let puzzle = [];
+let board = [];
+
+function shuffle(arr){
+    let a = [...arr];
+    for(let i = a.length -1; i>0; i--){
+        let j = Math.floor(Math.random()*(i+1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+}
+
+function isValid(grid, r,c,n){
+    for(let j=0;j<9;j++) if(grid[r][j]===n) return false;
+    for(let i=0;i<9;i++) if(grid[i][c]===n) return false;
+    const sr = Math.floor(r/3)*3;
+    const sc = Math.floor(c/3)*3;
+    for(let i=0;i<3;i++)
+        for(let j=0;j<3;j++)
+            if(grid[sr+i][sc+j]===n) return false;
+    return true;
+}
+
+function fillBoard(grid){
+    for(let r=0;r<9;r++){
+        for(let c=0;c<9;c++){
+            if(grid[r][c]===0){
+                const nums = shuffle([1,2,3,4,5,6,7,8,9]);
+                for(let n of nums){
+                    if(isValid(grid,r,c,n)){
+                        grid[r][c]=n;
+                        if(fillBoard(grid)) return true;
+                        grid[r][c]=0;
+                    }
+                }
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+function createPuzzle(){
+    const full = Array.from({length:9},()=>Array(9).fill(0));
+    fillBoard(full);
+    const p = full.map(row=>[...row]);
+    let count = 0;
+    while(count < 40){
+        const r = Math.floor(Math.random()*9);
+        const c = Math.floor(Math.random()*9);
+        if(p[r][c]!==0){
+            p[r][c]=0;
+            count++;
+        }
+    }
+    return {full, puzzle:p};
+}
+
+function render(){
+    const table = document.getElementById("board");
+    table.innerHTML="";
+    for(let i=0;i<9;i++){
+        const tr = document.createElement("tr");
+        for(let j=0;j<9;j++){
+            const td = document.createElement("td");
+            if(puzzle.puzzle[i][j]!==0){
+                td.innerText = puzzle.puzzle[i][j];
+                td.className = "original";
+            }else{
+                const inp = document.createElement("input");
+                inp.value = board[i][j]||"";
+                inp.oninput = ()=>{
+                    let raw = inp.value.replace(/[^1-9]/g,'');
+                    if(raw.length>1) raw = raw[0];
+                    inp.value = raw;
+                    board[i][j] = raw ? Number(raw) : 0;
+                }
+                td.appendChild(inp);
+            }
+            tr.appendChild(td);
+        }
+        table.appendChild(tr);
+    }
+    document.getElementById("tip").innerText="";
+}
+
+function check(){
+    const table = document.getElementById("board");
+    const rows = table.querySelectorAll("tr");
+    let hasError = false;
+
+    for(let i=0;i<9;i++){
+        const cells = rows[i].querySelectorAll("td");
+        for(let j=0;j<9;j++){
+            const td = cells[j];
+            td.classList.remove("wrong");
+
+            if(puzzle.puzzle[i][j]===0){
+                const val = board[i][j];
+                if(val !== 0 && val !== puzzle.full[i][j]){
+                    td.classList.add("wrong");
+                    hasError = true;
+                }
+            }
+        }
+    }
+
+    const tip = document.getElementById("tip");
+    if(hasError){
+        tip.innerText = "❌ 红色格子答案错误";
+        tip.style.color = "#c0392b";
+    }else{
+        tip.innerText = "✅ 全部正确！";
+        tip.style.color = "#208020";
+    }
+}
+
+function newGame(){
+    puzzle = createPuzzle();
+    board = JSON.parse(JSON.stringify(puzzle.puzzle));
+    render();
+}
+
+newGame();
+</script>
+</body>
+</html>
