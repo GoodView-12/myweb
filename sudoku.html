@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<title>随机数独（错误标红）</title>
+<title>数独小游戏</title>
 <style>
 *{box-sizing:border-box;font-family:system-ui}
 body{background:#f4f7ff;text-align:center;padding:20px}
@@ -33,7 +33,6 @@ button{
     background:#777;
     margin-bottom:16px;
 }
-/* 按钮容器：弹性布局，两端拉开，小屏可横向滚动 */
 .btn-group{
     display:flex;
     gap:30px;
@@ -46,11 +45,11 @@ button{
 </head>
 <body>
 <button id="backBtn" onclick="location.href='https://goodview-12.github.io/myweb/'">← 返回主页</button>
-<h2>随机数独小游戏</h2>
+<h2>数独小游戏</h2>
 <table id="board"></table>
 <div class="btn-group">
-<button onclick="check()">检查答案（标红错误格）</button>
-<button onclick="newGame()">新一局（随机）</button>
+<button onclick="check()">检查答案</button>
+<button onclick="newGame()">新一局</button>
 </div>
 <div id="tip"></div>
 
