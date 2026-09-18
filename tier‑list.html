@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>排行创作工具</title>
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:"Microsoft Yahei",sans-serif;
+}
+
+body{
+    background:#212121;
+    padding:16px;
+    color:#eee;
+}
+
+.container{
+    max-width:960px;
+    margin:0 auto;
+}
+
+h1{
+    color:#fff;
+    text-align:center;
+    margin-bottom:16px;
+    font-size:24px;
+    letter-spacing:1px;
+}
+
+.ctrl-bar{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-bottom:16px;
+    justify-content:center;
+    align-items:center;
+}
+
+button,.btn{
+    padding:8px 16px;
+    border:none;
+    border-radius:6px;
+    background:#7a1f1f;
+    color:#fff;
+    cursor:pointer;
+    font-size:14px;
+    font-weight:bold;
+    letter-spacing:1px;
+    border:1px solid #5c1717;
+}
+
+button:hover,.btn:hover{
+    background:#922626;
+}
+
+.tier-table{
+    border:2px solid #444;
+    border-radius:10px;
+    overflow:hidden;
+    background:#171717;
+}
+
+.tier-row{
+    display:flex;
+    min-height:110px;
+    border-bottom:2px solid #444;
+}
+
+.tier-row:last-child{
+    border-bottom:none;
+}
+
+.tier-label{
+    width:110px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:900;
+    font-size:22px;
+    color:#000;
+    text-shadow:none;
+    letter-spacing:2px;
+    border-right:2px solid #444;
+    flex-shrink:0;
+}
+
+.tier-label input{
+    width:100%;
+    height:100%;
+    border:none;
+    background:transparent;
+    text-align:center;
+    font-weight:900;
+    font-size:22px;
+    color:#000;
+    outline:none;
+    letter-spacing:2px;
+}
+
+.tier-items{
+    flex:1;
+    padding:8px;
+    display:flex;
+    gap:6px;
+    flex-wrap:wrap;
+    align-content:flex-start;
+    min-height:110px;
+    background:#2b2b2b;
+    cursor:pointer;
+}
+
+.tier-items.active{
+    background:#3a3a3a;
+    box-shadow:inset 0 0 0 2px #7a1f1f;
+}
+
+.img-item{
+    width:82px;
+    height:82px;
+    object-fit:cover;
+    border-radius:4px;
+    border:2px solid #555;
+    background:#000;
+    user-select:none;
+    cursor:pointer;
+}
+
+.img-item.selected{
+    border-color:#ff4444;
+    box-shadow:0 0 0 3px #ff4444;
+}
+
+.pool{
+    margin-top:24px;
+    background:#171717;
+    border:2px solid #444;
+    border-radius:10px;
+    padding:16px;
+}
+
+.pool-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:12px;
+}
+
+.pool h3{
+    color:#fff;
+    font-size:17px;
+}
+
+.pool-tip{
+    color:#bbb;
+    font-size:13px;
+    margin-bottom:10px;
+}
+
+.pool-area{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+    min-height:90px;
+    padding:10px;
+    background:#2b2b2b;
+    border-radius:8px;
+    border:1px dashed #555;
+}
+
+.template-card{
+    margin-top:16px;
+    background:#2b2b2b;
+    border:2px solid #444;
+    border-radius:10px;
+    padding:16px;
+}
+
+.template-card h4{
+    color:#fff;
+    margin-bottom:12px;
+    font-size:17px;
+}
+
+.template-buttons{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+.template-buttons button{
+    flex:1;
+    min-width:130px;
+}
+
+.back-home{
+    margin:24px 0;
+    text-align:center;
+}
+
+.back-home a{
+    display:inline-block;
+    padding:10px 22px;
+    background:#7a1f1f;
+    color:#fff;
+    text-decoration:none;
+    border-radius:6px;
+    font-weight:bold;
+    letter-spacing:1px;
+    border:1px solid #5c1717;
+}
+
+.back-home a:hover{
+    background:#922626;
+}
+
+.custom-menu{
+    position:absolute;
+    z-index:999;
+    background:#2c2c2c;
+    border:1px solid #555;
+    border-radius:8px;
+    overflow:hidden;
+    display:none;
+}
+.custom-menu div{
+    padding:10px 18px;
+    color:#fff;
+    cursor:pointer;
+}
+.custom-menu div:hover{
+    background:#444;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+    <h1>排行创作工具</h1>
+
+    <div class="ctrl-bar">
+        <button id="addRow">新增排行行</button>
+        <button id="delLastRow">删除最后一行</button>
+        <button id="clearSelected">取消选择</button>
+        <button id="deleteSel">删除选中图片</button>
+        <label class="btn">上传图片
+            <input type="file" id="fileInput" accept="image/*" multiple style="display:none;">
+        </label>
+    </div>
+
+    <div class="tier-table" id="tierTable"></div>
+
+    <div class="pool">
+        <div class="pool-header">
+            <h3>图片素材池</h3>
+            <button id="generateImage">生成图片</button>
+        </div>
+        <div class="pool-tip">点击图片选中；点另一张图片可互换位置；点行空白处放置；按钮删除选中。</div>
+        <div id="poolArea" class="pool-area"></div>
+
+        <div class="template-card">
+            <h4>快速切换模板</h4>
+            <div class="template-buttons">
+                <button onclick="loadTemplate('tpl1')">模板一</button>
+                <button onclick="loadTemplate('tpl2')">模板二</button>
+                <button onclick="loadTemplate('tplDefault')">默认(字母渐变)</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="back-home">
+        <a href="index.html">返回主页</a>
+    </div>
+</div>
+
+<div class="custom-menu" id="customMenu">
+    <div data-action="insert">在此上方新增行</div>
+    <div data-action="delete">删除本行</div>
+</div>
+
+<script>
+const tierTable = document.getElementById('tierTable');
+const poolArea = document.getElementById('poolArea');
+const fileInput = document.getElementById('fileInput');
+const addRowBtn = document.getElementById('addRow');
+const delRowBtn = document.getElementById('delLastRow');
+const clearSelectedBtn = document.getElementById('clearSelected');
+const deleteSelBtn = document.getElementById('deleteSel');
+const generateImageBtn = document.getElementById('generateImage');
+const customMenu = document.getElementById('customMenu');
+
+let selectedImg = null;
+let targetRow = null;
+
+const templates = {
+    tpl1:[
+        {text:"夯", bg:"#ff3322"},
+        {text:"夯下", bg:"#ffaa22"},
+        {text:"顶级", bg:"#7755dd"},
+        {text:"顶下", bg:"#33bb55"},
+        {text:"人上人", bg:"#606060"},
+        {text:"人下", bg:"#ee33bb"},
+        {text:"NPC", bg:"#ffdd22"},
+        {text:"NPC下", bg:"#22aa22"},
+        {text:"拉完了", bg:"#888888"},
+    ],
+    tpl2:[
+        {text:"夯", bg:"#d62222"},
+        {text:"顶级", bg:"#ffbb00"},
+        {text:"入上入", bg:"#fff100"},
+        {text:"NPC", bg:"#ffe8bc"},
+        {text:"拉完了", bg:"#eeeeee"},
+    ],
+    tplDefault:[
+        {text:"S", bg:"#ff4444"},
+        {text:"A", bg:"#ff8822"},
+        {text:"B", bg:"#ffcc22"},
+        {text:"C", bg:"#88dd44"},
+        {text:"D", bg:"#22bb77"},
+        {text:"E", bg:"#2299dd"},
+        {text:"F", bg:"#8866dd"},
+    ]
+};
+
+function clearSelected(){
+    if(selectedImg){
+        selectedImg.classList.remove('selected');
+        selectedImg = null;
+    }
+    document.querySelectorAll('.tier-items').forEach(z=>z.classList.remove('active'));
+}
+
+function bindRowClick(rowEl){
+    const box = rowEl.querySelector('.tier-items');
+    box.addEventListener('click', (e)=>{
+        if(e.target.classList.contains('img-item')) return;
+        if(selectedImg){
+            box.appendChild(selectedImg);
+            clearSelected();
+        }
+    });
+
+    box.addEventListener('contextmenu',(e)=>{
+        if(e.target.classList.contains('img-item')) return;
+        e.preventDefault();
+        targetRow = rowEl;
+        showMenu(e.pageX, e.pageY);
+    })
+}
+
+function showMenu(x,y){
+    customMenu.style.left = `${x}px`;
+    customMenu.style.top = `${y}px`;
+    customMenu.style.display = 'block';
+}
+function hideMenu(){
+    customMenu.style.display = 'none';
+    targetRow=null;
+}
+
+customMenu.addEventListener('click',e=>{
+    const action = e.target.dataset.action;
+    if(!targetRow) return hideMenu();
+    if(action === 'insert'){
+        const newRow = createRow({text:"新等级",bg:"#666666"});
+        targetRow.before(newRow);
+    }else if(action === 'delete'){
+        if(tierTable.querySelectorAll('.tier-row').length>1){
+            targetRow.remove();
+        }
+    }
+    hideMenu();
+})
+document.addEventListener('click',hideMenu);
+
+function createRow(config){
+    const row = document.createElement('div');
+    row.className='tier-row';
+    row.innerHTML = `
+        <div class="tier-label" style="background:${config.bg}"><input value="${config.text}"></div>
+        <div class="tier-items"></div>
+    `;
+    bindRowClick(row);
+    return row;
+}
+
+window.loadTemplate = function(name){
+    tierTable.innerHTML = '';
+    clearSelected();
+    const arr = templates[name];
+    arr.forEach(item=>{
+        const r = createRow(item);
+        tierTable.appendChild(r);
+    })
+}
+
+function bindImageClick(img){
+    img.addEventListener('click', (e)=>{
+        e.stopPropagation();
+        if(selectedImg && selectedImg !== img){
+            const parentA = selectedImg.parentNode;
+            const parentB = img.parentNode;
+            const nextA = selectedImg.nextSibling;
+            const nextB = img.nextSibling;
+
+            parentA.insertBefore(img, nextA);
+            parentB.insertBefore(selectedImg, nextB);
+            clearSelected();
+            return;
+        }
+        if(selectedImg === img){
+            clearSelected();
+            return;
+        }
+        clearSelected();
+        selectedImg = img;
+        img.classList.add('selected');
+        document.querySelectorAll('.tier-items').forEach(z=>z.classList.add('active'));
+    });
+}
+
+clearSelectedBtn.onclick = clearSelected;
+
+deleteSelBtn.onclick = ()=>{
+    if(!selectedImg) return;
+    selectedImg.remove();
+    selectedImg = null;
+    document.querySelectorAll('.tier-items').forEach(z=>z.classList.remove('active'));
+};
+
+addRowBtn.onclick = () => {
+    const row = createRow({text:"新等级",bg:"#666666"});
+    tierTable.appendChild(row);
+};
+
+delRowBtn.onclick = () => {
+    const rows = tierTable.querySelectorAll('.tier-row');
+    if(rows.length > 1){
+        rows[rows.length - 1].remove();
+    }
+};
+
+fileInput.onchange = e => {
+    const files = e.target.files;
+    for(let f of files){
+        const reader = new FileReader();
+        reader.onload = ev => {
+            const img = document.createElement('img');
+            img.className = 'img-item';
+            img.src = ev.target.result;
+            bindImageClick(img);
+            poolArea.appendChild(img);
+        }
+        reader.readAsDataURL(f);
+    }
+    fileInput.value='';
+};
+
+generateImageBtn.onclick = async function(){
+    const rows = tierTable.querySelectorAll('.tier-row');
+    if(rows.length === 0){
+        alert('当前没有排行内容');
+        return;
+    }
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    const rowHeight = 110;
+    const labelWidth = 110;
+    const itemSize = 82;
+    const gap = 6;
+    const padding = 8;
+    const minRowWidth = 400;
+
+    let maxRowWidth = minRowWidth;
+    rows.forEach(row=>{
+        const items = row.querySelectorAll('.img-item');
+        const count = items.length;
+        const itemsWidth = count ? count*itemSize + (count-1)*gap : 0;
+        const rowWidth = labelWidth + padding*2 + itemsWidth + 40;
+        if(rowWidth>maxRowWidth) maxRowWidth = rowWidth;
+    });
+
+    canvas.width = maxRowWidth;
+    canvas.height = rows.length * rowHeight;
+
+    const loadImg = (src)=>{
+        return new Promise(resolve=>{
+            const im = new Image();
+            im.onload = ()=>resolve(im);
+            im.onerror = ()=>resolve(null);
+            setTimeout(()=>resolve(null),1500);
+            im.src = src;
+        })
+    }
+
+    for(let ri=0;ri<rows.length;ri++){
+        const row = rows[ri];
+        const y = ri*rowHeight;
+        const label = row.querySelector('.tier-label');
+        const input = label.querySelector('input');
+        ctx.fillStyle = label.style.background;
+        ctx.fillRect(0,y,labelWidth,rowHeight);
+        ctx.fillStyle = '#171717';
+        ctx.fillRect(labelWidth,y,maxRowWidth-labelWidth,rowHeight);
+        ctx.fillStyle='#444';
+        ctx.fillRect(0,y+rowHeight-2,maxRowWidth,2);
+        ctx.fillStyle='#000';
+        ctx.font='bold 24px Microsoft Yahei';
+        ctx.textAlign='center';
+        ctx.textBaseline='middle';
+        ctx.fillText(input.value, labelWidth/2, y+rowHeight/2);
+
+        const imgs = row.querySelectorAll('.img-item');
+        for(let ii=0;ii<imgs.length;ii++){
+            const x = labelWidth + padding + ii*(itemSize+gap);
+            const imgEl = imgs[ii];
+            const im = await loadImg(imgEl.src);
+            if(im){
+                ctx.drawImage(im,x,y+padding,itemSize,itemSize);
+            }
+        }
+    }
+    try{
+        const link = document.createElement('a');
+        link.download='tierlist.png';
+        link.href=canvas.toDataURL('image/png');
+        link.click();
+    }catch(e){
+        alert("导出失败：本地直接打开文件会受浏览器限制，请部署到GitHub Pages再使用导出功能");
+    }
+};
+
+loadTemplate('tplDefault');
+</script>
+</body>
+</html>
