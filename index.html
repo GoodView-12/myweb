@@ -1,136 +1,227 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>吉辰良景の博客</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            min-height: 100vh;
-            background: linear-gradient(135deg, #fff0f6, #ffe8ef);
-            font-family: "Microsoft Yahei", sans-serif;
-            padding: 0 20px 40px;
-        }
-        .container {
-            max-width: 720px;
-            margin: 0 auto;
-        }
-        .banner-wrap {
-            position: relative;
-            width: 100%;
-            height: 220px;
-            border-radius: 18px 18px 0 0;
-            overflow: hidden;
-        }
-        .banner-img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .banner-gradient {
-            position: absolute;
-            left: 0;
-            bottom: 0;
-            width: 100%;
-            height: 90px;
-            background: linear-gradient(to bottom, transparent, #fff0f6);
-        }
-        .card {
-            background: rgba(255,255,255,0.65);
-            backdrop-filter: blur(10px);
-            border-radius: 0 0 18px 18px;
-            padding: 24px 30px 36px;
-            box-shadow: 0 4px 16px rgba(220,140,165,0.15);
-            margin-bottom: 24px;
-        }
-        .header {
-            text-align: center;
-        }
-        h1 {
-            color:#b84b70;
-            font-size:32px;
-            margin-bottom:8px;
-        }
-        .slogan {
-            color:#d17894;
-            font-size:16px;
-            margin-bottom:24px;
-        }
-        .intro {
-            color:#8c4c60;
-            line-height:1.75;
-            font-size:16px;
-        }
-        .tool-card {
-            padding:22px;
-            border-radius:16px;
-            background:rgba(255,255,255,0.7);
-            text-align:center;
-            margin-bottom:24px;
-        }
-        .tool-card h3 {
-            color:#b84b70;
-            margin-bottom:10px;
-        }
-        .repo-card {
-            padding:22px;
-            border-radius:16px;
-            background:rgba(255,255,255,0.7);
-            text-align:center;
-        }
-        .repo-card h3 {
-            color:#b84b70;
-            margin-bottom:10px;
-        }
-        .tool-link {
-            display:inline-block;
-            padding:10px 22px;
-            background:#e87a9a;
-            color:#fff;
-            text-decoration:none;
-            border-radius:10px;
-        }
-        footer {
-            text-align:center;
-            margin-top:36px;
-            color:#c27890;
-            font-size:14px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>吉辰良景的个人博客</title>
+  <style>
+    html, body {
+      min-height: 100%;
+    }
+    body {
+      background-color: #fff0f6;
+      margin: 0;
+      font-family: "Noto Sans SC", "PingFang SC", sans-serif;
+    }
+    .card {
+      background-color: #ffd6e0;
+      width: calc(100% - 32px);
+      border-radius: 10px;
+      margin: 8px 16px 0 16px;
+      overflow: auto;
+    }
+    .card-text {
+      float: left;
+      width: 100%;
+      text-align: center;
+      padding-top: 32px;
+      font-size: 28px;
+      color: #6b2c44;
+    }
+    .card-desc {
+      float: left;
+      width: 100%;
+      text-align: center;
+      padding: 16px 24px 32px;
+      font-size: 18px;
+      color: #7b3852;
+    }
+    .btn {
+      float: left;
+      width: calc(50% - 24px);
+      margin: 0 12px 32px;
+      padding: 14px 0;
+      border: none;
+      border-radius: 8px;
+      background-color: #f8b8cc;
+      font-size: 17px;
+      color: #551a38;
+      text-align: center;
+      text-decoration: none;
+      cursor: pointer;
+      position: relative;
+      z-index: 10;
+    }
+    .footer-text {
+      float: left;
+      width: 100%;
+      text-align: center;
+      padding: 40px 0 24px;
+      font-size: 14px;
+    }
+    .footer-text a {
+      color: #884860;
+      text-decoration: none;
+    }
+    .footer-text a:hover {
+      text-decoration: underline;
+    }
+    .hero-wrap {
+      position: relative;
+    }
+    .hero-image {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      display: block;
+    }
+    .hero-wrap::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      height: 40%;
+      background: linear-gradient(to bottom, transparent, #fff0f6);
+    }
+
+    /* 文章白色小卡片 */
+    .article-card {
+      float: left;
+      width: calc(100% - 32px);
+      margin: 16px;
+      background: #ffffff;
+      border-radius: 10px;
+      overflow: hidden;
+      text-decoration: none;
+      color: #333;
+      cursor: pointer;
+    }
+    .article-card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      display: block;
+    }
+    .article-card .title {
+      float: left;
+      width: 100%;
+      padding: 14px 16px;
+      font-size: 18px;
+    }
+    .loading-tip {
+      float: left;
+      width: 100%;
+      text-align: center;
+      padding: 32px;
+      color: #7b3852;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="banner-wrap">
-            <img class="banner-img" src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=1200&q=80" alt="风景头图">
-            <div class="banner-gradient"></div>
-        </div>
+  <div class="hero-wrap">
+    <img class="hero-image" src="https://goodview-12.github.io/myweb/image/hero_image_1.jpg">
+  </div>
 
-        <div class="card header">
-            <h1>吉辰良景の博客</h1>
-            <div class="slogan">这是副标题。</div>
-            <p class="intro">
-你好。
-            </p>
-        </div>
+  <!-- 第一张粉色卡片 -->
+  <div class="card">
+    <div class="card-text">吉辰良景的个人博客</div>
+    <div class="card-desc">你好。</div>
+  </div>
 
-        <div class="tool-card">
-            <h3>在线项目</h3>
-            <a class="tool-link" href="sudoku.html">在线数独</a>
-        </div>
+  <!-- 第二张粉色卡片：文章列表容器 -->
+  <div class="card" id="articleContainer">
+    <div class="loading-tip">加载文章中…</div>
+  </div>
 
-        <div class="repo-card">
-            <h3>下载项目</h3>
-            <a class="tool-link" href="https://github.com/goodview-12/myweb" target="_blank">前往GitHub</a>
-        </div>
+  <!-- 第三张粉色卡片：在线项目 -->
+  <div class="card">
+    <div class="card-text">在线项目</div>
+    <a class="btn" href="https://goodview-12.github.io/myweb/online/sudoku" target="_blank">数独</a>
+    <a class="btn" href="https://goodview-12.github.io/myweb/online/tierlist" target="_blank">Tier List</a>
+  </div>
 
-        <footer>
-            吉辰良景の博客
-        </footer>
-    </div>
+  <div class="footer-text">
+    <a href="https://github.com/goodview-12/myweb" target="_blank">前往 GitHub</a>
+  </div>
+
+  <script>
+    const container = document.getElementById("articleContainer");
+    
+    const imgExts = ["jpg", "png", "webp"];
+
+    // 获取可用封面图片 url
+    async function getCover(name) {
+      for (const ext of imgExts) {
+        const url = `mdtext/${name}.${ext}`;
+        const ok = await testImg(url);
+        if (ok) return url;
+      }
+      // 全部找不到，返回占位图，你可以替换成自己的占位图
+      return "https://picsum.photos/600/300";
+    }
+
+    // 测试图片是否可以加载
+    function testImg(url) {
+      return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => resolve(true);
+        img.onerror = () => resolve(false);
+        img.src = url;
+      });
+    }
+
+    // 读取 md，提取标题
+    async function getTitle(name) {
+      const res = await fetch(`mdtext/${name}.md`);
+      if (!res.ok) return "无标题";
+      const text = await res.text();
+      const firstLine = text.split("\n")[0].trim();
+      if (firstLine.startsWith("# ")) {
+        return firstLine.slice(2).trim();
+      }
+      return firstLine || "无标题";
+    }
+
+    // 渲染单篇文章卡片
+    async function renderArticle(name) {
+      const cover = await getCover(name);
+      const title = await getTitle(name);
+
+      const a = document.createElement("a");
+      a.className = "article-card";
+      a.href = `article.html?name=${encodeURIComponent(name)}`;
+      a.target = "_blank";
+
+      const img = document.createElement("img");
+      img.src = cover;
+      img.alt = title;
+
+      const titleDiv = document.createElement("div");
+      titleDiv.className = "title";
+      titleDiv.innerText = title;
+
+      a.appendChild(img);
+      a.appendChild(titleDiv);
+      container.appendChild(a);
+    }
+
+    // 入口，读取 mdlist.json
+    async function init() {
+      try {
+        const res = await fetch("./mdlist.json");
+        if (!res.ok) throw new Error("load list fail");
+        const list = await res.json();
+        container.innerHTML = "";
+        for (const name of list) {
+          await renderArticle(name);
+        }
+      } catch (e) {
+        container.innerHTML = `<div class="loading-tip">暂无内容</div>`;
+      }
+    }
+
+    init();
+  </script>
 </body>
 </html>
