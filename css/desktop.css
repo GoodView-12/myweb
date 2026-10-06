@@ -28,4 +28,5 @@
         .button1 > p{
             color:darkcyan;
             font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            white-space: nowrap;        
         }
