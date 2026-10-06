@@ -4,8 +4,7 @@
             border-radius: 12px;
             box-shadow: 0 6px 18px rgba(36, 46, 44, 0.08);
             overflow: hidden;
-            aspect-ratio: 1/0.8;
-            display:inline;
+            width: 50%
         }
  body{
             background-color : #e6f7f4;
