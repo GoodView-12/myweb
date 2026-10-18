@@ -4,35 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/nav.css">
     <title>测试文章</title>
     <style>
         h1,h2{
             text-align: center;
-        }
-        nav {
-            display: flex;
-            border-bottom: 1px solid rgba(0,0,0,0.08);
-            padding: 30px;
-            justify-content: space-between;
-            align-items: center;
-            gap:12px;
-        }
-        nav button{
-            border: none;
-            background: transparent;
-            font-size: 18px;
-            transition-property: all;
-            transition-duration: 0.5s;
-        }
-        nav > button:hover{
-            font-size: 22px;
-            transform: translateY(-10px);
-        }
-        nav > button:focus{
-            color: #b6a56d;
-            font-weight: 900;
-            font-size: 22px;
-        }
+        }    
         .content{
            margin-inline: 50px;
         }
@@ -41,11 +18,9 @@
 <body>
     <nav>
         <h2>吉辰良景的博客</h2>
-        <a href="../index.html">
-            <button>
-                返回首页
-            </button>
-        </a>
+        <button onclick="btn_back()">
+            返回
+        </button>
     </nav>
     <br>
     <br>
@@ -54,5 +29,15 @@
     <div class="content">
         <p>这是一篇用来测试用的文章</p>
     </div>
+    <script>
+        function btn_back(){
+            if(history.length > 1){
+                history.back
+            }else{
+                alert("无上一页，即将返回首页")
+                location.href="../index.html"
+            }
+        }
+    </script>
 </body>
 </html>

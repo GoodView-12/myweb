@@ -5,32 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>吉辰良景的博客</title>
     <link rel="stylesheet" href="./css/main.css">
+    <link rel="stylesheet" href="./css/nav.css">
     <style>
-        /* 导航栏 */
-        nav {
-            display: flex;
-            border-bottom: 1px solid rgba(0,0,0,0.08);
-            padding: 30px;
-            justify-content: space-between;
-            align-items: center;
-            gap:12px;
-        }
-        nav > button{
-            border: none;
-            background: transparent;
-            font-size: 18px;
-            transition-property: all;
-            transition-duration: 0.5s;
-        }
-        nav > button:hover{
-            font-size: 22px;
-            transform: translateY(-10px);
-        }
-        nav > button:focus{
-            color: #b6a56d;
-            font-weight: 900;
-            font-size: 22px;
-        }
         .view{
             position: absolute;
             top: 90px; 
@@ -57,7 +33,6 @@
             height: auto;
             margin: 0 auto;
             display:block;
-            filter: blur(2px) saturate(0.98) contrast(0.92);
         }
         /* 波浪svg */
         .wave-svg{
@@ -67,25 +42,38 @@
             width:100%;
             height:80px;
         }
+        /* 导航语言选择器简单样式 */
+        nav select{
+            padding:4px 8px;
+            border-radius:6px;
+            border:1px solid #ccc;
+            margin-left:10px;
+        }
     </style>
 </head>
 <body>
     <nav>
-        <h2>吉辰良景的博客</h2>
-        <button onclick="nav_btn('home', this)">首页</button>
-        <button onclick="nav_btn('blog', this)">博客</button>
-        <button onclick="nav_btn('online', this)">在线项目</button>
-        <button onclick="nav_btn('projects', this)">项目集</button>
+        <h2 data-i18n="site_title">吉辰良景的博客</h2>
+        <button onclick="nav_btn('home', this)" data-i18n="home">首页</button>
+        <button onclick="nav_btn('blog', this)" data-i18n="blog">博客</button>
+        <button onclick="nav_btn('online', this)" data-i18n="online_projects">在线项目</button>
+        <button onclick="nav_btn('projects', this)" data-i18n="projects">项目集</button>
+        <!-- 语言下拉选择框 -->
+        <select id="langSelect">
+            <option value="zh_Hans">简体中文</option>
+            <option value="zh_Hant">繁體中文</option>
+            <option value="en">English</option>
+            <option value="jp">日本語</option>
+        </select>
     </nav>
     <div class="view active" id="home">
         <div id="home_img_box">
             <img src="./image/home_img1.png" alt="首页图片">
             <svg class="wave-svg" viewBox="0 0 1440 120" preserveAspectRatio="none">
-  background-color: #f4f4e8;
                 <path fill="#FFF9E8" fill-opacity="0.98" d="M0,64L48,69.3C96,75,192,85,288,80C384,75,480,53,576,48C672,43,768,53,864,64C960,75,1056,85,1152,80C1248,75,1344,53,1392,42.7L1440,32L1440,120L1392,120C1344,120,1248,120,1152,120C1056,120,960,120,864,120C768,120,672,120,576,120C480,120,384,120,288,120C192,120,96,120,48,120L0,120Z"></path>
             </svg>
         </div>
-        <h1 style="text-align: center;">你好，欢迎访问我的博客！</h1>
+        <h1 style="text-align: center;" data-i18n="welcome_text">你好，欢迎访问我的博客！</h1>
         <div class="cards_box">
             
         </div>
@@ -103,15 +91,17 @@
     </div>
     <div class="view" id="online">
         <div class="cards_box">
-            <p>暂无更多</p>
+            <p data-i18n="on_more">暂无更多</p>
         </div>
     </div>
     <div class="view" id="projects">
         <div class="cards_box">
-             <p>暂无更多</p>
+         <p data-i18n="on_more">暂无更多</p>
         </div>
     </div>
+<script src="./i18n.js"></script>
 <script>
+// 页面切换函数
 function nav_btn(showID, btnEl){
     const allViews = document.querySelectorAll(".view");
     for(let i = 0; i < allViews.length; i++){
@@ -120,6 +110,17 @@ function nav_btn(showID, btnEl){
     const el = document.getElementById(showID);
     el.classList.add("active");
 }
+
+// 初始化执行
+const defaultLang = getBrowserLang();
+document.getElementById("langSelect").value = defaultLang;
+updateLang(defaultLang);
+
+// 下拉框切换语言事件监听
+document.getElementById("langSelect").addEventListener("change", function(){
+    updateLang(this.value);
+})
 </script>
 </body>
 </html>
+
